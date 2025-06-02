@@ -5,6 +5,7 @@ import HomePage from "./src/Pages/HomePage"
 import LogIn from "./src/Pages/Login";
 import Register from "./src/Pages/Register";
 import WishlistPage from "./src/Pages/WishlistPage";
+import AddEventPage from "./src/Pages/AddEvent";
 
 const routes = [
     {
@@ -32,6 +33,10 @@ const routes = [
                 path: "/grooveRater",
                 element: <GrooveRater />
                 
+            },
+            {
+                path: "add-event",
+                element: <AddEventPage />
             }
             
         ]

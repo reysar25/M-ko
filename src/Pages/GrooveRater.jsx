@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import EventCard from '../Components/EventCard';
 
 const GrooveRater = () => {
-  const {events, setEvents, wishlistItems,setWishlistItems} = useOutletContext()
+  const {events, setEvents} = useOutletContext()
   
   
 
@@ -54,8 +53,49 @@ const GrooveRater = () => {
       
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-        {events.map((event, index )=> (
-          <EventCard key={index} event={event} wishlistItems={wishlistItems} setWishlistItems={setWishlistItems}/>
+        {events.map(event => (
+          <div 
+            key={event.id}
+            className="bg-white rounded-xl shadow-2xl shadow-gray-700 overflow-hidden hover:shadow-lg transition cursor-pointer"
+            
+          >
+            <div className='flex justify-center items-center pb-0.5'>
+                <img src ={`${event.image}`} alt ={`${event.name}`} className='w-60 h-60'/>
+            </div>
+            <div className="p-6">
+              <div className="flex justify-between items-start">
+                <h2 className="text-xl font-bold text-gray-800"
+                  onClick={() => {
+                    setSelectedGroove(event);
+                    window.location.hash = 'reviews';
+                    setTimeout(() => {
+                      window.location.hash = '';
+                    }, 10000);
+                    
+                  }}>{event.name}</h2>
+                <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded">
+                  {event.genre}
+                </span>
+              </div>
+
+              <div className="mt-4 space-y-2 text-gray-600 text-sm">
+                <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
+                <p><strong>Location:</strong> {event.location}</p>
+                <p><strong>Organizer:</strong> {event.organizer}</p>
+              </div>
+
+              <div className="mt-4 flex items-center text-yellow-500 text-sm">
+                {'★'.repeat(Math.floor(event.rating)) + '☆'.repeat(5 - Math.floor(event.rating))}
+                <span className="ml-2 text-gray-500">
+                  ({event.reviews.length} reviews)
+                </span>
+              </div>
+
+              <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition cursor-pointer">
+                Book Tickets
+              </button>
+            </div>
+          </div>
         ))}
       </div>
 

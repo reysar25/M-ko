@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify'; 
 
 
-function EventCard({ event, wishlistItems, setWishlistItems }) {
+function EventCard({ event, wishlistItems, setWishlistItems,selected }) {
     const navigate = useNavigate()
     const isInWishlist = useMemo(() => 
         wishlistItems.some(item => item.id === event.id), 
@@ -42,7 +42,11 @@ function EventCard({ event, wishlistItems, setWishlistItems }) {
             </div>
             <div className="flex justify-between items-start mb-4">
                 <h2 className="text-xl font-bold text-gray-800 cursor-pointer hover:shadow-2xl truncate"
-                    onClick={() => navigate("/grooveRater")}>{event.name}</h2>
+                    onClick={() => {
+                        navigate("/grooveRater#reviews")
+                        se
+                        
+                    }}>{event.name}</h2>
                 <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded">
                     {event.genre}
                 </span>

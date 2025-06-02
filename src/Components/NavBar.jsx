@@ -1,14 +1,11 @@
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { useState } from "react";
 
 function Navbar({ isLoggedIn }) {
-  const navigate = useNavigate();
   const location = useLocation();
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filter, setFilter] = useState("all");
+ 
 
-  // Function to determine the login/signup text and link
   const getAuthLink = () => {
     if (location.pathname === "/login") {
       return { text: "Log In", path: "/login" };
@@ -21,17 +18,7 @@ function Navbar({ isLoggedIn }) {
 
   const authLink = getAuthLink();
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    console.log("Search for:", searchTerm);
-    // Example: navigate or filter your data here
-  };
-
-  const handleFilterChange = (e) => {
-    setFilter(e.target.value);
-    console.log("Filter set to:", e.target.value);
-    // Apply filter logic here
-  };
+  
 
   return (
     <div
@@ -71,6 +58,17 @@ function Navbar({ isLoggedIn }) {
         end
       >
         Groove Rater
+      </NavLink>
+      <NavLink
+        to="/add-event"
+        className={({ isActive }) =>
+          isActive
+            ? "mx-2 font-bold underline decoration-2 underline-offset-4"
+            : "mx-2 hover:text-gray-800 transition-colors"
+        }
+        end
+      >
+        Add Your Event
       </NavLink>
 
       <NavLink
