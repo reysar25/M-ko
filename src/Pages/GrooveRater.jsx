@@ -1,32 +1,11 @@
 import { useState } from 'react';
+import { useOutletContext } from 'react-router-dom';
+import EventCard from '../Components/EventCard';
 
 const GrooveRater = () => {
-  const [grooves, setGrooves] = useState([
-    {
-      id: 1,
-      title: "Jazz Night at Bebop Lounge",
-      organizer: "City Jazz Collective",
-      date: "2023-08-15",
-      location: "Downtown Arts District",
-      genre: "Jazz",
-      rating: 4.2,
-      reviews: [
-        { user: "MusicLover42", rating: 5, comment: "Incredible atmosphere and talented musicians!" },
-        { user: "GrooveMaster", rating: 4, comment: "Great venue but drinks were pricey" }
-      ]
-    },
-    {
-      id: 2,
-      title: "Indie Summer Fest",
-      organizer: "Local Sounds Inc",
-      date: "2023-08-22",
-      location: "Riverside Park",
-      genre: "Indie Rock",
-      description:"",
-      rating: 5,
-      reviews: []
-    }
-  ]);
+  const {events, setEvents, wishlistItems,setWishlistItems} = useOutletContext()
+  
+  
 
   const [selectedGroove, setSelectedGroove] = useState(null);
   const [newReview, setNewReview] = useState({ rating: 5, comment: "" });
@@ -35,9 +14,9 @@ const GrooveRater = () => {
   e.preventDefault();
   if (!newReview.comment.trim()) return;
 
-  const updatedGrooves = grooves.map(groove => {
-    if (groove.id === selectedGroove.id) {
-      const updatedReviews = [...groove.reviews, {
+  const updatedGrooves = events.map(event => {
+    if (event.id === selectedGroove.id) {
+      const updatedReviews = [...event.reviews, {
         user: "CurrentUser",
         ...newReview
       }];
@@ -47,16 +26,16 @@ const GrooveRater = () => {
       );
 
       return {
-        ...groove,
+        ...event,
         reviews: updatedReviews,
         rating: newAvgRating
       };
     } else {
-      return groove;
+      return event;
     }
   });
 
-  setGrooves(updatedGrooves);
+  setEvents(updatedGrooves);
   setSelectedGroove(updatedGrooves.find(g => g.id === selectedGroove.id));
   setNewReview({ rating: 5, comment: "" });
 };
@@ -75,38 +54,8 @@ const GrooveRater = () => {
       
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-        {grooves.map(groove => (
-          <div 
-            key={groove.id}
-            className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition cursor-pointer"
-            onClick={() => setSelectedGroove(groove)}
-          >
-            <div className="p-6">
-              <div className="flex justify-between items-start">
-                <h2 className="text-xl font-bold text-gray-800">{groove.title}</h2>
-                <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded">
-                  {groove.genre}
-                </span>
-              </div>
-
-              <div className="mt-4 space-y-2 text-gray-600 text-sm">
-                <p><strong>Date:</strong> {new Date(groove.date).toLocaleDateString()}</p>
-                <p><strong>Location:</strong> {groove.location}</p>
-                <p><strong>Organizer:</strong> {groove.organizer}</p>
-              </div>
-
-              <div className="mt-4 flex items-center text-yellow-500 text-sm">
-                {'★'.repeat(Math.floor(groove.rating)) + '☆'.repeat(5 - Math.floor(groove.rating))}
-                <span className="ml-2 text-gray-500">
-                  ({groove.reviews.length} reviews)
-                </span>
-              </div>
-
-              <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition cursor-pointer">
-                Book Tickets
-              </button>
-            </div>
-          </div>
+        {events.map((event, index )=> (
+          <EventCard key={index} event={event} wishlistItems={wishlistItems} setWishlistItems={setWishlistItems}/>
         ))}
       </div>
 
@@ -119,7 +68,7 @@ const GrooveRater = () => {
             ← Back to all grooves
           </button>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8" id = "reviews">
             <div className="lg:col-span-2">
               <h2 className="text-3xl font-bold text-gray-800 mb-2">{selectedGroove.title}</h2>
               <div className="flex items-center mb-6 text-yellow-500 text-lg">

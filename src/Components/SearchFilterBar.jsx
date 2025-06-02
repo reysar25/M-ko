@@ -22,7 +22,7 @@ function SearchFilterBar({ onSearch, onFilterChange }) {
           placeholder="Search..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="rounded-l-md px-3 py-1 text-black"
+          className="rounded-l-lg px-3 py-1 text-black border-2 border-blue-400 rounded-r-xs "
           aria-label="Search"
         />
         <button
@@ -40,11 +40,14 @@ function SearchFilterBar({ onSearch, onFilterChange }) {
         aria-label="Filter"
       >
         <option value="all">All Genres</option>
-        <option value="jazz">Jazz</option>
-        <option value="indie">Indie Rock</option>
-        <option value="rock">Rock</option>
-        <option value="pop">Pop</option>
+        <option value="food">Food</option>
+        <option value="film">Film</option>
+        <option value="music">Music</option>
+        <option value="party">Party</option>
+        <option value="sports">Sports</option>
+
       </select>
+
     </div>
   );
 }

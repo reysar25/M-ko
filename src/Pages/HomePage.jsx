@@ -3,16 +3,9 @@ import { useOutletContext } from "react-router-dom";
 import EventCard from "../Components/EventCard";
 
 function HomePage() {
-  const [events, setEvents] = useState([]);
-  const { searchTerm, filter,setWishlistItems, wishlistItems } = useOutletContext();
+  const { searchTerm, filter,setWishlistItems, wishlistItems, events } = useOutletContext();
 
-  useEffect(() => {
-    fetch("http://localhost:3000/events")
-      .then((res) => res.json())
-      .then((data) => {
-        setEvents(data);
-      });
-  }, []);
+  
 
   const filteredEvents = events.filter((event) => {
     const matchesSearch =
