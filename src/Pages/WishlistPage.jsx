@@ -1,13 +1,9 @@
-import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import EventCard from "../Components/EventCard";
 
 function WishlistPage() {
-  const { searchTerm, filter } = useOutletContext();
+  const { searchTerm, filter, wishlistItems, setWishlistItems } = useOutletContext();
 
-  
-
-  // Filter wishlist items based on searchTerm and filter state
   const filteredItems = wishlistItems.filter((item) => {
     const matchesSearch =
       searchTerm === "" ||
@@ -25,8 +21,13 @@ function WishlistPage() {
     <>
       <div className="flex flex-wrap overflow-auto gap-4">
         {filteredItems.length > 0 ? (
-          filteredItems.map((item, index) => (
-            <EventCard event={item} key={index} />
+          filteredItems.map((event, index) => (
+            <EventCard 
+              event={event} 
+              key={index}
+              wishlistItems={wishlistItems}
+              setWishlistItems={setWishlistItems}
+            />
           ))
         ) : (
           <p className="text-gray-600">No wishlist items match your criteria.</p>

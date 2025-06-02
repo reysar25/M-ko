@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float
-from database import Base  # Import Base from your database.py
+from backend.database import Base  # Import Base from your database.py
 
 class Ticket(Base):
     __tablename__ = "tickets"  # Fixed: double underscores

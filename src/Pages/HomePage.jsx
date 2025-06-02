@@ -4,7 +4,7 @@ import EventCard from "../Components/EventCard";
 
 function HomePage() {
   const [events, setEvents] = useState([]);
-  const { searchTerm, filter } = useOutletContext();
+  const { searchTerm, filter,setWishlistItems, wishlistItems } = useOutletContext();
 
   useEffect(() => {
     fetch("http://localhost:3000/events")
@@ -14,7 +14,6 @@ function HomePage() {
       });
   }, []);
 
-  // Filter events based on searchTerm and filter state
   const filteredEvents = events.filter((event) => {
     const matchesSearch =
       searchTerm === "" ||
@@ -33,7 +32,7 @@ function HomePage() {
       <div className="flex flex-wrap overflow-auto gap-4">
         {filteredEvents.length > 0 ? (
           filteredEvents.map((event, index) => (
-            <EventCard event={event} key={index} />
+            <EventCard event={event} key={index} wishlistItems={wishlistItems} setWishlistItems={setWishlistItems}/>
           ))
         ) : (
           <p className="text-gray-600">No events match your criteria.</p>
