@@ -1,5 +1,6 @@
 import App from "./src/App";
 import ErrorPage from "./src/Pages/ErrorPage";
+import GrooveRater from "./src/Pages/GrooveRater";
 import HomePage from "./src/Pages/HomePage"
 import LogIn from "./src/Pages/Login";
 import Register from "./src/Pages/Register";
@@ -26,6 +27,11 @@ const routes = [
             {
                 path: "/login",
                 element:<LogIn />
+            },
+            {
+                path: "/grooveRater",
+                element: <GrooveRater />
+                
             }
             
         ]
