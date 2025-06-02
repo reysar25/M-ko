@@ -20,7 +20,7 @@ const GrooveRater = () => {
         comment: newReview.comment
       };
 
-      const response = await fetch(`http://localhost:8000/events/${selectedGroove.id}/review`, {
+      const response = await fetch(`https://mko-backend.onrender.com/events/${selectedGroove.id}/review`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -29,8 +29,8 @@ const GrooveRater = () => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Failed to add review');
+        const error = await response.json();
+        throw new Error(error.detail || 'Failed to add review');
       }
 
       const result = await response.json();

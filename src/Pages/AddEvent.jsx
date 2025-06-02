@@ -46,7 +46,7 @@ function AddEventPage() {
         };
 
         try {
-            const response = await fetch('http://localhost:8000/events/', {
+            const response = await fetch("https://mko-backend.onrender.com/events/", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -63,7 +63,6 @@ function AddEventPage() {
             console.log('Event added successfully:', addedEvent);
             toast.success(`"${addedEvent.name}" added successfully!`);
 
-            // Reset form
             setNewEvent({
                 name: '',
                 genre: '',

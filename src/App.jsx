@@ -23,7 +23,7 @@ function App() {
   };
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/events/")
+    fetch("https://mko-backend.onrender.com/events/")
       .then((res) => res.json())
       .then((data) => {
         setEvents(data);
