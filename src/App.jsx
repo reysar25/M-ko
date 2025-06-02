@@ -23,7 +23,7 @@ function App() {
   };
 
   useEffect(() => {
-    fetch("http://localhost:3000/events")
+    fetch("http://127.0.0.1:8000/events/")
       .then((res) => res.json())
       .then((data) => {
         setEvents(data);

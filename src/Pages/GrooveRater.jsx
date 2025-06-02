@@ -1,45 +1,67 @@
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { auth } from '../Components/firebase';
+import { toast } from 'react-toastify';
 
 const GrooveRater = () => {
-  const {events, setEvents} = useOutletContext()
+  const {events, setEvents} = useOutletContext();
   
-  
-
   const [selectedGroove, setSelectedGroove] = useState(null);
   const [newReview, setNewReview] = useState({ rating: 5, comment: "" });
 
-  const handleSubmitReview = (e) => {
-  e.preventDefault();
-  if (!newReview.comment.trim()) return;
+  const handleSubmitReview = async (e) => {
+    e.preventDefault();
+    if (!newReview.comment.trim()) return;
 
-  const updatedGrooves = events.map(event => {
-    if (event.id === selectedGroove.id) {
-      const updatedReviews = [...event.reviews, {
+    try {
+      const reviewData = {
         user: auth.currentUser.email,
-        ...newReview
-      }];
-
-      const newAvgRating = (
-        updatedReviews.reduce((acc, review) => acc + review.rating, 0) / updatedReviews.length
-      );
-
-      return {
-        ...event,
-        reviews: updatedReviews,
-        rating: newAvgRating
+        rating: newReview.rating,
+        comment: newReview.comment
       };
-    } else {
-      return event;
+
+      const response = await fetch(`http://localhost:8000/events/${selectedGroove.id}/review`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reviewData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to add review');
+      }
+
+      const result = await response.json();
+      
+      const updatedReviews = result.reviews;
+      const newAvgRating = updatedReviews.length > 0 
+        ? updatedReviews.reduce((acc, review) => acc + review.rating, 0) / updatedReviews.length
+        : 5.0;
+
+      const updatedGrooves = events.map(event => {
+        if (event.id === selectedGroove.id) {
+          return {
+            ...event,
+            reviews: updatedReviews,
+            rating: newAvgRating
+          };
+        }
+        return event;
+      });
+
+      setEvents(updatedGrooves);
+      setSelectedGroove(updatedGrooves.find(g => g.id === selectedGroove.id));
+      setNewReview({ rating: 5, comment: "" });
+      
+      toast.success('Review added successfully!');
+
+    } catch (error) {
+      console.error('Error adding review:', error);
+      toast.error(`Failed to add review: ${error.message}`);
     }
-  });
-
-  setEvents(updatedGrooves);
-  setSelectedGroove(updatedGrooves.find(g => g.id === selectedGroove.id));
-  setNewReview({ rating: 5, comment: "" });
-};
-
+  };
 
   return (
     <div className="max-w-7xl mx-auto p-4">
@@ -50,18 +72,14 @@ const GrooveRater = () => {
         </p>
       </div>
 
-      
-      
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
         {events.map(event => (
           <div 
             key={event.id}
             className="bg-white rounded-xl shadow-2xl shadow-gray-700 overflow-hidden hover:shadow-lg transition cursor-pointer"
-            
           >
             <div className='flex justify-center items-center pb-0.5'>
-                <img src ={`${event.image}`} alt ={`${event.name}`} className='w-60 h-60'/>
+                <img src={`${event.image}`} alt={`${event.name}`} className='w-60 h-60'/>
             </div>
             <div className="p-6">
               <div className="flex justify-between items-start">
@@ -72,7 +90,6 @@ const GrooveRater = () => {
                     setTimeout(() => {
                       window.location.hash = '';
                     }, 10000);
-                    
                   }}>{event.name}</h2>
                 <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded">
                   {event.genre}
@@ -88,13 +105,18 @@ const GrooveRater = () => {
               <div className="mt-4 flex items-center text-yellow-500 text-sm">
                 {'★'.repeat(Math.floor(event.rating)) + '☆'.repeat(5 - Math.floor(event.rating))}
                 <span className="ml-2 text-gray-500">
-                  ({event.reviews.length} reviews)
+                  ({event.reviews?.length || 0} reviews)
                 </span>
               </div>
 
-              <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition cursor-pointer">
+              <a 
+                href={event.ticket} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition cursor-pointer block text-center"
+              >
                 Book Tickets
-              </button>
+              </a>
             </div>
           </div>
         ))}
@@ -109,13 +131,13 @@ const GrooveRater = () => {
             ← Back to all grooves
           </button>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8" id = "reviews">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8" id="reviews">
             <div className="lg:col-span-2">
-              <h2 className="text-3xl font-bold text-gray-800 mb-2">{selectedGroove.title}</h2>
+              <h2 className="text-3xl font-bold text-gray-800 mb-2">{selectedGroove.name}</h2>
               <div className="flex items-center mb-6 text-yellow-500 text-lg">
                 {'★'.repeat(Math.floor(selectedGroove.rating)) + '☆'.repeat(5 - Math.floor(selectedGroove.rating))}
                 <span className="ml-2 text-gray-500 text-lg">
-                  {selectedGroove.rating.toFixed(1)} ({selectedGroove.reviews.length} reviews)
+                  {selectedGroove.rating.toFixed(1)} ({selectedGroove.reviews?.length || 0} reviews)
                 </span>
               </div>
 
@@ -135,15 +157,13 @@ const GrooveRater = () => {
                   <p className="text-blue-600 font-medium">{selectedGroove.organizer}</p>
                 </div>
 
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-500 uppercase">Description</h3>
-                  <p>
-                    {selectedGroove.description}
-                  </p>
-                </div>
+                {selectedGroove.description && (
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-500 uppercase">Description</h3>
+                    <p>{selectedGroove.description}</p>
+                  </div>
+                )}
               </div>
-
-              
             </div>
 
             <div>
@@ -181,7 +201,7 @@ const GrooveRater = () => {
               </div>
 
               <div className="space-y-6">
-                {selectedGroove.reviews.length > 0 ? (
+                {selectedGroove.reviews && selectedGroove.reviews.length > 0 ? (
                   selectedGroove.reviews.map((review, index) => (
                     <div key={index} className="border-b pb-4">
                       <div className="flex justify-between mb-2">
@@ -191,6 +211,11 @@ const GrooveRater = () => {
                         </div>
                       </div>
                       <p className="text-gray-600">{review.comment}</p>
+                      {review.timestamp && (
+                        <p className="text-gray-400 text-xs mt-1">
+                          {new Date(review.timestamp).toLocaleDateString()}
+                        </p>
+                      )}
                     </div>
                   ))
                 ) : (

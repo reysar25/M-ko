@@ -1,20 +1,19 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session 
-from sqlalchemy import inspect
 from typing import List
+from datetime import datetime
 from backend.database import engine, SessionLocal
-from backend.models import Base, Ticket
+from backend.models import Base, Event
 from backend import schemas
-import os
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = FastAPI(title="Event Management API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:3000", "http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -27,140 +26,176 @@ def get_db():
     finally:
         db.close()
 
-def initialize_sample_data():
-    """Populate the database with sample ticket data"""
+def sample_data():
     db = SessionLocal()
     try:
-        inspector = inspect(engine)
-        if not inspector.has_table("tickets"):
-            return
-            
-        if db.query(Ticket).count() == 0:
-            sample_tickets = [
-                Ticket(
-                    name="Drake Night Party",
-                    date="2025-05-16",
-                    venue="The Alchemist Bar, Westlands, Nairobi",
-                    price=10.00,
-                    image="https://i.pinimg.com/736x/fc/bb/68/fcbb68d0595741235cd99c5db18934d0.jpg",
-                    description="A high-energy nightclub event..."
+        if db.query(Event).count() == 0:
+            sample_events = [
+                Event(
+                    id=1,
+                    image="https://admin.ticketmojo.co.ke//storage/events/main_photo_1746873032.jpg",
+                    name="Project X!",
+                    genre="Music",
+                    date="2025-06-27",
+                    location="TBA",
+                    organizer="House of Music Entertainment",
+                    rating=5.0,
+                    reviews=[],
+                    ticket="https://ticketmojo.co.ke/event/project-x!#buy-ticket"
                 ),
-                Ticket(
-                    name="Ciza's Palace",
-                    date="2025-05-23",
-                    venue="KIZA Restaurant and Lounge, Kilimani, Nairobi",
-                    price=15.00,
-                    image="https://i.pinimg.com/736x/00/67/a8/0067a8c9eec0dc319a35f610a8f7445d.jpg",
-                    description="An upscale nightlife event..."
+                Event(
+                    id=2,
+                    image="https://admin.ticketmojo.co.ke//storage/events/main_photo_1748776427.png",
+                    name="Soul-Tie",
+                    genre="Music",
+                    date="2025-06-01",
+                    location="Moov Bar & Bistro",
+                    rating=5.0,
+                    reviews=[],
+                    description="Soul-tie: Where Soul Meets Sound",
+                    ticket="https://ticketmojo.co.ke/event/soul-tie#buy-ticket"
                 ),
-                Ticket(
-                    name="Nairobi Street Food Kitchen",
-                    date="2025-06-07",
-                    venue="Ballpoint Social Club, Nairobi",
-                    price=12.00,
-                    image="https://via.placeholder.com/300?text=Food+Festival",
-                    description="A culinary festival showcasing Nairobi's street food culture"
+                Event(
+                    id=3,
+                    image="https://admin.ticketmojo.co.ke//storage/events/main_photo_1748197127.jpeg",
+                    name="MOTHERLAND BRUNCH 1.2",
+                    genre="Food",
+                    date="2025-08-09",
+                    location="REPLAY, BROADWALK MALL",
+                    organizer="Flickshub",
+                    rating=5.0,
+                    reviews=[],
+                    ticket="https://ticketmojo.co.ke/event/motherland-brunch-1.2#buy-ticket"
                 ),
-                Ticket(
-                    name="Abantu",
-                    date="2025-06-14",
-                    venue="The Tunnel, Mombasa Road, Nairobi",
-                    price=8.00,
-                    image="https://via.placeholder.com/300?text=Abantu",
-                    description="Cultural music and dance event"
+                Event(
+                    id=4,
+                    image="https://admin.ticketmojo.co.ke//storage/events/main_photo_1747827480.jpg",
+                    name="MAMBO JANGOR",
+                    genre="Traditional",
+                    date="2025-06-12",
+                    location="Old Kings Castle -Rongai",
+                    organizer="MAMBO JANGOR",
+                    rating=5.0,
+                    reviews=[],
+                    description="You're warmly invited to an exclusive full-moon journey to a hidden castle. Attire: Sovereign White",
+                    ticket="https://ticketmojo.co.ke/event/mambo-jangor#buy-ticket"
                 ),
-                Ticket(
-                    name="Afro Beats Day Party",
-                    date="2025-06-21",
-                    venue="Sky Lounge, Emara Ole Sereni Hotel",
-                    price=10.00,
-                    image="https://via.placeholder.com/300?text=Afro+Beats",
-                    description="Daytime party celebrating Afrobeats"
-                ),
-                Ticket(
-                    name="GTR East Africa 2025",
-                    date="2025-05-21",
-                    venue="JW Marriott Hotel Nairobi",
-                    price=100.00,
-                    image="https://via.placeholder.com/300?text=GTR",
-                    description="Trade and export financing event"
-                ),
-                Ticket(
-                    name="Nairobi TravelExpo 2025",
-                    date="2025-05-30",
-                    venue="Sarova Panafric Hotel",
-                    price=25.00,
-                    image="https://via.placeholder.com/300?text=TravelExpo",
-                    description="Tourism expo promoting African travel"
-                ),
-                Ticket(
-                    name="Circle Art Gallery Exhibition",
-                    date="2025-06-05",
-                    venue="Circle Art Gallery, Nairobi",
-                    price=15.00,
-                    image="https://via.placeholder.com/300?text=Art+Exhibition",
-                    description="Contemporary works by local artists"
+                Event(
+                    id=5,
+                    image="https://admin.ticketmojo.co.ke//storage/events/main_photo_1747816947.png",
+                    name="Crafting Compelling Landing pages for B2C and B2B Startups.",
+                    genre="Technology",
+                    date="2025-06-12",
+                    location="Brew Bistro Ngong Road",
+                    organizer="Kenyan Indie Hackers",
+                    rating=5.0,
+                    reviews=[],
+                    description="Ready to build something real? Join fellow founders, makers, and aspiring VCs at Indie Hackers Kenya",
+                    ticket="https://ticketmojo.co.ke/event/kenyan-indie-hackers#buy-ticket"
                 )
             ]
-            db.add_all(sample_tickets)
+            db.add_all(sample_events)
             db.commit()
     except Exception as e:
-        print(f"Error initializing data: {str(e)}")
+        print(f"Error initializing data: {e}")
+        db.rollback()
     finally:
         db.close()
 
 @app.on_event("startup")
-async def startup_event():
-    initialize_sample_data()
+async def startup():
+    sample_data()
 
-@app.post("/tickets/", response_model=schemas.TicketResponse)
-def create_ticket(ticket: schemas.TicketCreate, db: Session = Depends(get_db)):
-    """Create a new ticket"""
-    db_ticket = Ticket(**ticket.model_dump())
-    db.add(db_ticket)
-    db.commit()
-    db.refresh(db_ticket)
-    return db_ticket
-
-@app.get("/tickets/", response_model=List[schemas.TicketResponse])
-def read_tickets(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    """Get list of tickets with pagination"""
-    return db.query(Ticket).offset(skip).limit(limit).all()
-
-@app.get("/tickets/{ticket_id}", response_model=schemas.TicketResponse)
-def read_ticket(ticket_id: int, db: Session = Depends(get_db)):
-    """Get a specific ticket by ID"""
-    ticket = db.query(Ticket).filter(Ticket.id == ticket_id).first()
-    if not ticket:
-        raise HTTPException(status_code=404, detail="Ticket not found")
-    return ticket
-
-@app.put("/tickets/{ticket_id}", response_model=schemas.TicketResponse)
-def update_ticket(ticket_id: int, ticket: schemas.TicketCreate, db: Session = Depends(get_db)):
-    """Update an existing ticket"""
-    db_ticket = db.query(Ticket).filter(Ticket.id == ticket_id).first()
-    if not db_ticket:
-        raise HTTPException(status_code=404, detail="Ticket not found")
-    
-    for key, value in ticket.model_dump().items():
-        setattr(db_ticket, key, value)
-    
-    db.commit()
-    db.refresh(db_ticket)
-    return db_ticket
-
-@app.delete("/tickets/{ticket_id}")
-def delete_ticket(ticket_id: int, db: Session = Depends(get_db)):
-    """Delete a ticket"""
-    ticket = db.query(Ticket).filter(Ticket.id == ticket_id).first()
-    if not ticket:
-        raise HTTPException(status_code=404, detail="Ticket not found")
-    
-    db.delete(ticket)
-    db.commit()
-    return {"message": "Ticket deleted successfully"}
 
 @app.get("/")
 async def root():
-    """API root endpoint"""
-    return {"message": "Ticket API is running"}
+    return {"message": "Event Management API", "version": "1.0.0"}
+
+@app.get("/health")
+async def health():
+    return {"status": "healthy"}
+
+@app.get("/events/", response_model=List[schemas.EventResponse])
+def get_events(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(100, ge=1, le=1000),
+    db: Session = Depends(get_db)
+):
+    """Get all events with pagination"""
+    return db.query(Event).offset(skip).limit(limit).all()
+
+@app.post("/events/", response_model=schemas.EventResponse, status_code=201)
+def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)):
+    """Create new event"""
+    try:
+        db_event = Event(**event.model_dump())
+        db.add(db_event)
+        db.commit()
+        db.refresh(db_event)
+        return db_event
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.get("/events/{event_id}", response_model=schemas.EventResponse)
+def get_event(event_id: int, db: Session = Depends(get_db)):
+    """Get single event by ID"""
+    event = db.query(Event).filter(Event.id == event_id).first()
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+    return event
+
+@app.put("/events/{event_id}", response_model=schemas.EventResponse)
+def update_event(event_id: int, event: schemas.EventUpdate, db: Session = Depends(get_db)):
+    """Update event"""
+    db_event = db.query(Event).filter(Event.id == event_id).first()
+    if not db_event:
+        raise HTTPException(status_code=404, detail="Event not found")
+    
+    try:
+        update_data = event.model_dump(exclude_unset=True)
+        for key, value in update_data.items():
+            setattr(db_event, key, value)
+        
+        db.commit()
+        db.refresh(db_event)
+        return db_event
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.delete("/events/{event_id}")
+def delete_event(event_id: int, db: Session = Depends(get_db)):
+    """Delete event"""
+    event = db.query(Event).filter(Event.id == event_id).first()
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+    
+    try:
+        db.delete(event)
+        db.commit()
+        return {"message": "Event deleted", "id": event_id}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.post("/events/{event_id}/review")
+def add_review(event_id: int, review: dict, db: Session = Depends(get_db)):
+    """Add review to event"""
+    event = db.query(Event).filter(Event.id == event_id).first()
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+    
+    try:
+        if event.reviews is None:
+            event.reviews = []
+        
+        review['timestamp'] = datetime.now().isoformat()
+        event.reviews.append(review)
+        
+        db.commit()
+        db.refresh(event)
+        return {"message": "Review added", "reviews": event.reviews}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify'; 
 
@@ -12,12 +12,9 @@ function AddEventPage() {
         location: '',
         organizer: '',
         description: '',
-        rating: 5,
-        reviews: [],
         image: '',
         ticket: ''
-    })
-
+    });
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -27,7 +24,6 @@ function AddEventPage() {
         }));
     };
 
-    
     const handleAddEvent = async (e) => {
         e.preventDefault(); 
 
@@ -37,17 +33,37 @@ function AddEventPage() {
         }
 
         const eventToSubmit = {
-            title: newEvent.name, 
-            rating: 0, 
-            reviews: [],
-            ...newEvent, 
+            name: newEvent.name,
+            genre: newEvent.genre,
+            date: newEvent.date,
+            location: newEvent.location,
+            organizer: newEvent.organizer,
+            description: newEvent.description,
+            image: newEvent.image,
+            ticket: newEvent.ticket,
+            rating: 5.0,
+            reviews: []
         };
 
         try {
-            //Post 
-            console.log('Simulating adding event:', eventToSubmit);
-            toast.success(`"${eventToSubmit.name}" added successfully!`);
+            const response = await fetch('http://localhost:8000/events/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(eventToSubmit)
+            });
 
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Failed to add event');
+            }
+
+            const addedEvent = await response.json();
+            console.log('Event added successfully:', addedEvent);
+            toast.success(`"${addedEvent.name}" added successfully!`);
+
+            // Reset form
             setNewEvent({
                 name: '',
                 genre: '',
@@ -86,7 +102,7 @@ function AddEventPage() {
                 </div>
 
                 <div>
-                    <label htmlFor="genre" className="block text-sm font-medium text-gray-700 mb-1">Genre <span className="text-red-500">*</span></label>
+                    <label htmlFor="genre" className="block text-sm font-medium text-gray-700 mb-1">Genre</label>
                     <input
                         type="text"
                         id="genre"
@@ -106,7 +122,7 @@ function AddEventPage() {
                         name="date"
                         value={newEvent.date}
                         onChange={handleChange}
-                        className="w-full border rounded-lg p-3 focus:ring-2" focus="ring-blue-500 focus:border-blue-500"
+                        className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         required
                     />
                 </div>
@@ -126,7 +142,7 @@ function AddEventPage() {
                 </div>
 
                 <div>
-                    <label htmlFor="organizer" className="block text-sm font-medium text-gray-700 mb-1">Organizer <span className="text-red-500">*</span></label>
+                    <label htmlFor="organizer" className="block text-sm font-medium text-gray-700 mb-1">Organizer</label>
                     <input
                         type="text"
                         id="organizer"
@@ -135,12 +151,11 @@ function AddEventPage() {
                         onChange={handleChange}
                         className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="e.g., Live Nation"
-                        required
                     />
                 </div>
 
                 <div>
-                    <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">Description <span className="text-red-500">*</span></label>
+                    <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                     <textarea
                         id="description"
                         name="description"
@@ -149,12 +164,11 @@ function AddEventPage() {
                         rows="4"
                         className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="Provide a detailed description of the event..."
-                        required
                     />
                 </div>
 
                 <div>
-                    <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">Image URL <span className="text-red-500">*</span></label>
+                    <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
                     <input
                         type="url"
                         id="image"
@@ -163,12 +177,11 @@ function AddEventPage() {
                         onChange={handleChange}
                         className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="e.g., https://example.com/event-banner.jpg"
-                        required
                     />
                 </div>
 
                 <div>
-                    <label htmlFor="ticket" className="block text-sm font-medium text-gray-700 mb-1">Ticket URL <span className="text-red-500">*</span></label>
+                    <label htmlFor="ticket" className="block text-sm font-medium text-gray-700 mb-1">Ticket URL</label>
                     <input
                         type="url"
                         id="ticket"
@@ -177,7 +190,6 @@ function AddEventPage() {
                         onChange={handleChange}
                         className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="e.g., https://example.com/buy-tickets/123"
-                        required
                     />
                 </div>
 
