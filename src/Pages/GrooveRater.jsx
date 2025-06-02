@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
+import { auth } from '../Components/firebase';
 
 const GrooveRater = () => {
   const {events, setEvents} = useOutletContext()
@@ -16,7 +17,7 @@ const GrooveRater = () => {
   const updatedGrooves = events.map(event => {
     if (event.id === selectedGroove.id) {
       const updatedReviews = [...event.reviews, {
-        user: "CurrentUser",
+        user: auth.currentUser.email,
         ...newReview
       }];
 

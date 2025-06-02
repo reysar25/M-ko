@@ -1,22 +1,22 @@
-// import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-// import { auth } from '../Components/Firebase';
-// import { useOutletContext } from 'react-router-dom';
-// import { ToastContainer, toast } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
+import { auth } from '../Components/firebase';
+import { useOutletContext } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function LogIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  // const { dark, setIsLoggedIn} = useOutletContext();
+  const { setIsLoggedIn } = useOutletContext();
   
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      
+
       toast.success("Login successful! Redirecting...", {
         position: "top-center",
         autoClose: 1500,
@@ -24,13 +24,16 @@ function LogIn() {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        // theme: "dark",
       });
       
       setTimeout(() => {
         navigate("/");
         setIsLoggedIn(true);
-      }, 1500);
+
+        
+        
+        
+      }, 1000);
     } catch(error) {
       let errorMessage = "Login failed. Please check your credentials.";
       
@@ -49,7 +52,6 @@ function LogIn() {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        theme: "dark",
       });
       
       console.error(error);
@@ -58,14 +60,13 @@ function LogIn() {
 
   return (
     <div className="max-w-md mx-auto p-6 rounded-lg shadow-lg border border-gray-400 hover:scale-102 hover:shadow-2xl hover:shadow-gray-400">
-      {/* <ToastContainer /> */}
       <h2 className="text-2xl font-bold mb-6 text-center text-darkText">Sign In</h2>
       <form className="space-y-6" onSubmit={handleLogin}>
         <div className="space-y-2">
           <label className="block text-sm font-medium text-darkText">Email Address</label>
           <input 
             type="email" 
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 "
             placeholder="Enter Email" 
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -76,7 +77,7 @@ function LogIn() {
           <label className="block text-sm font-medium text-darkText">Password</label>
           <input 
             type="password" 
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 "
             placeholder="Enter Password" 
             value={password}
             onChange={(e) => setPassword(e.target.value)}

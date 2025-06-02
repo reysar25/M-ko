@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate, useOutletContext } from 'react-router-dom';
-// import { auth, db } from '../Components/Firebase';
-// import { createUserWithEmailAndPassword } from 'firebase/auth';
-// import { doc, setDoc } from "firebase/firestore";
-// import { ToastContainer, toast } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
+import { auth, db } from '../Components/firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from "firebase/firestore";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Register() {
   const [email, setEmail] = useState("");
@@ -12,16 +12,13 @@ function Register() {
   const [fName, setFName] = useState("");
   const [lName, setLName] = useState("");
   const navigate = useNavigate();
-  // const { setIsLoggedIn } = useOutletContext();
+  const { setIsLoggedIn } = useOutletContext();
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
     try {
-      const loadingToast = toast.loading("Creating your account...", {
-        position: "top-center",
-        theme: "dark",
-      });
+      
 
       await createUserWithEmailAndPassword(auth, email, password);
       const user = auth.currentUser;
@@ -29,15 +26,13 @@ function Register() {
       console.log(user.email, fName, lName);
 
       if (user) {
-        await setDoc(doc(db, "users", user.uid), {
+        await setDoc(doc(db, "Users", user.uid), {
           email: user.email,
           firstName: fName,
           lastName: lName
         });
 
-        toast.update(loadingToast, {
-          render: "Registration successful! Redirecting...",
-          type: "success",
+        toast.success("Registration successful! Redirecting...", {
           isLoading: false,
           autoClose: 2000,
           closeOnClick: true,
@@ -51,6 +46,8 @@ function Register() {
       }
     } catch (error) {
       console.log(error);
+      console.log(error.message);
+      console.log(error.code);
 
       let errorMessage = "Registration failed. Please try again.";
 
@@ -76,14 +73,13 @@ function Register() {
 
   return (
     <div className="max-w-md mx-auto p-6 rounded-lg shadow-lg border border-gray-400 hover:scale-102 hover:shadow-2xl hover:shadow-gray-400">
-      {/* <ToastContainer /> */}
       <h2 className="text-2xl font-bold mb-6 text-center text-darkText">Register</h2>
       <form className="space-y-6" onSubmit={handleRegister}>
         <div className="space-y-2">
           <label className="block text-sm font-medium text-darkText">First Name</label>
           <input
             type="text"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 "
             placeholder="Enter First Name"
             value={fName}
             onChange={(e) => setFName(e.target.value)}
@@ -94,7 +90,7 @@ function Register() {
           <label className="block text-sm font-medium text-darkText">Last Name</label>
           <input
             type="text"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 "
             placeholder="Enter Last Name"
             value={lName}
             onChange={(e) => setLName(e.target.value)}
@@ -105,7 +101,7 @@ function Register() {
           <label className="block text-sm font-medium text-darkText">Email Address</label>
           <input
             type="email"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 "
             placeholder="Enter Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -116,7 +112,7 @@ function Register() {
           <label className="block text-sm font-medium text-darkText">Password</label>
           <input
             type="password"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 "
             placeholder="Enter Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

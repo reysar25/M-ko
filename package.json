@@ -13,6 +13,7 @@
     "@heroicons/react": "^1.0.6",
     "@tailwindcss/vite": "^4.1.7",
     "fastapi": "^0.0.8",
+    "firebase": "^11.8.1",
     "install": "^0.13.0",
     "npm": "^11.4.1",
     "react": "^19.1.0",

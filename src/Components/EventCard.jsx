@@ -1,10 +1,11 @@
 import { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { toast } from 'react-toastify'; 
 
 
-function EventCard({ event, wishlistItems, setWishlistItems,selected }) {
+function EventCard({ event, wishlistItems, setWishlistItems }) {
     const navigate = useNavigate()
+    const {isLoggedIn} = useOutletContext()
     const isInWishlist = useMemo(() => 
         wishlistItems.some(item => item.id === event.id), 
         [wishlistItems, event.id]
@@ -44,7 +45,6 @@ function EventCard({ event, wishlistItems, setWishlistItems,selected }) {
                 <h2 className="text-xl font-bold text-gray-800 cursor-pointer hover:shadow-2xl truncate"
                     onClick={() => {
                         navigate("/grooveRater#reviews")
-                        se
                         
                     }}>{event.name}</h2>
                 <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded">
@@ -68,18 +68,28 @@ function EventCard({ event, wishlistItems, setWishlistItems,selected }) {
             <div className="space-y-2 ">
                 <button 
                     onClick={toggleWishlist}
-                    className={`w-full py-2 px-4 rounded font-medium transition-colors cursor-pointer ${
-                        isInWishlist 
-                            ? 'bg-red-600 hover:bg-red-700 text-white' 
-                            : 'bg-blue-500 hover:bg-blue-700 text-gray-900'
-                    }`}
+                    className={`w-full py-2 px-4 rounded font-medium transition-colors ${
+                        isLoggedIn
+                            ? `cursor-pointer ${
+                                isInWishlist 
+                                    ? 'bg-red-600 hover:bg-red-700 text-white' 
+                                    : 'bg-blue-500 hover:bg-blue-700 text-white'
+                                }`
+                            : 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-50'
+                        }`}
+                    disabled={!isLoggedIn}
                 >
-                    {isInWishlist ? ' Remove from Wishlist' : ' Add to Wishlist'}
+                    {isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
                 </button>
-                
+
                 <button 
+                    disabled={!isLoggedIn}
                     onClick={bookTickets}
-                    className="w-full cursor-pointer bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors font-medium"
+                    className={`w-full py-2 px-4 rounded font-medium transition-colors ${
+                        isLoggedIn
+                            ? 'cursor-pointer bg-blue-600 text-white hover:bg-blue-700'
+                            : 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-50'
+                        }`}
                 >
                     Book Tickets
                 </button>

@@ -10,7 +10,8 @@ function App() {
     const [filter, setFilter] = useState("all");
     const [wishlistItems, setWishlistItems] = useState([]);
     const [events, setEvents] = useState([]);
-
+    const [isLoggedIn,setIsLoggedIn] = useState(false)
+  
 
   const handleSearch = (term) => {
     setSearchTerm(term);
@@ -31,10 +32,10 @@ function App() {
 
   return (
     <>
-      <NavBar />
+      <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <SearchFilterBar onSearch={handleSearch} onFilterChange={handleFilterChange} />
       <ToastContainer />
-      <Outlet context={{ searchTerm, filter, wishlistItems, setWishlistItems, events, setEvents }} />
+      <Outlet context={{ searchTerm, filter, wishlistItems, setWishlistItems, events, setEvents, isLoggedIn, setIsLoggedIn }} />
     </>
   );
 }
