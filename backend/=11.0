@@ -1,0 +1,29 @@
+Defaulting to user installation because normal site-packages is not writeable
+Collecting websockets
+  Downloading websockets-13.1-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.8 kB)
+Requirement already satisfied: uvicorn[standard] in /home/corene/.local/lib/python3.8/site-packages (0.22.0)
+Requirement already satisfied: click>=7.0 in /usr/lib/python3/dist-packages (from uvicorn[standard]) (7.0)
+Requirement already satisfied: h11>=0.8 in /usr/lib/python3/dist-packages (from uvicorn[standard]) (0.9.0)
+Collecting httptools>=0.5.0 (from uvicorn[standard])
+  Downloading httptools-0.6.4-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (3.6 kB)
+Collecting python-dotenv>=0.13 (from uvicorn[standard])
+  Downloading python_dotenv-1.0.1-py3-none-any.whl.metadata (23 kB)
+Requirement already satisfied: pyyaml>=5.1 in /usr/lib/python3/dist-packages (from uvicorn[standard]) (5.3.1)
+Requirement already satisfied: uvloop!=0.15.0,!=0.15.1,>=0.14.0 in /home/corene/.local/lib/python3.8/site-packages (from uvicorn[standard]) (0.21.0)
+Collecting watchfiles>=0.13 (from uvicorn[standard])
+  Downloading watchfiles-0.24.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+Requirement already satisfied: anyio>=3.0.0 in /home/corene/.local/lib/python3.8/site-packages (from watchfiles>=0.13->uvicorn[standard]) (4.5.2)
+Requirement already satisfied: idna>=2.8 in /usr/lib/python3/dist-packages (from anyio>=3.0.0->watchfiles>=0.13->uvicorn[standard]) (2.8)
+Requirement already satisfied: sniffio>=1.1 in /home/corene/.local/lib/python3.8/site-packages (from anyio>=3.0.0->watchfiles>=0.13->uvicorn[standard]) (1.3.1)
+Requirement already satisfied: exceptiongroup>=1.0.2 in /home/corene/.local/lib/python3.8/site-packages (from anyio>=3.0.0->watchfiles>=0.13->uvicorn[standard]) (1.3.0)
+Requirement already satisfied: typing-extensions>=4.1 in /home/corene/.local/lib/python3.8/site-packages (from anyio>=3.0.0->watchfiles>=0.13->uvicorn[standard]) (4.13.2)
+Downloading websockets-13.1-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (164 kB)
+Downloading httptools-0.6.4-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (453 kB)
+Downloading python_dotenv-1.0.1-py3-none-any.whl (19 kB)
+Downloading watchfiles-0.24.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (426 kB)
+Installing collected packages: websockets, python-dotenv, httptools, watchfiles
+  Attempting uninstall: httptools
+    Found existing installation: httptools 0.1.2
+    Uninstalling httptools-0.1.2:
+      Successfully uninstalled httptools-0.1.2
+Successfully installed httptools-0.6.4 python-dotenv-1.0.1 watchfiles-0.24.0 websockets-13.1

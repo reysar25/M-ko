@@ -1,35 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState,useEffect } from "react";
+import NavBar from "./Components/NavBar";
+import SearchFilterBar from "./Components/SearchFilterBar"; 
+import { Outlet } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filter, setFilter] = useState("all");
+    const [wishlistItems, setWishlistItems] = useState([]);
+    const [events, setEvents] = useState([]);
+    const [isLoggedIn,setIsLoggedIn] = useState(false)
+  
+
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+  };
+
+  const handleFilterChange = (value) => {
+    setFilter(value);
+    console.log("Filter changed:", value);
+  };
+
+  useEffect(() => {
+    fetch("https://mko-backend.onrender.com/events/")
+      .then((res) => res.json())
+      .then((data) => {
+        setEvents(data);
+      });
+  }, []);
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+      <SearchFilterBar onSearch={handleSearch} onFilterChange={handleFilterChange} />
+      <ToastContainer />
+      <Outlet context={{ searchTerm, filter, wishlistItems, setWishlistItems, events, setEvents, isLoggedIn, setIsLoggedIn }} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
